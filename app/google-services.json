@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "504903096765",
+    "firebase_url": "https://mysul-64aac.firebaseio.com",
+    "project_id": "mysul-64aac",
+    "storage_bucket": "mysul-64aac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504903096765:android:3d23aeab34ac8d8b7b9ad4",
+        "android_client_info": {
+          "package_name": "com.example.mysul"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504903096765-urt3ju7nri5fpvatdm39gr0pgdprkbtv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mysul",
+            "certificate_hash": "a63dbaffb556b4062d45fc68d4e86f92de9198e5"
+          }
+        },
+        {
+          "client_id": "504903096765-lpnpnqq3580orgakc9e3moi49hvdjucq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSopMFkYtGuyRCfIZ1ir7mPEdTFA0JUYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504903096765-lpnpnqq3580orgakc9e3moi49hvdjucq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

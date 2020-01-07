@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_location"
+            android:checkable="false"
+            android:icon="@drawable/ic_my_location"
+            android:title="Location" />
+
+        <item
+            android:id="@+id/drawer_contact"
+            android:icon="@drawable/ic_contacts"
+            android:title="Edit contact" />
+
+    </group>
+
+        <item android:title="Form">
+            <menu>
+                <item
+                android:id="@+id/health"
+                android:icon="@drawable/ic_local_hospital_black_24dp"
+                android:title="Medical form"/>
+
+            </menu>
+
+        </item>
+
+    <item android:title="Exit" >
+        <menu>
+            <item
+                android:id="@+id/signOut"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="Sign out" />
+
+        </menu>
+
+    </item>
+
+
+</menu>
