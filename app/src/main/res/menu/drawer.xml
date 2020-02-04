@@ -8,11 +8,15 @@
             android:title="Location" />
 
         <item
+            android:id="@+id/drawer_friend"
+            android:checkable="false"
+            android:title="Find Friend"
+            android:icon="@drawable/ic_person_add_black_24dp"/>
+        <item
             android:id="@+id/drawer_contact"
             android:icon="@drawable/ic_contacts"
             android:title="Edit contact" />
 
-    </group>
 
         <item android:title="Form">
             <menu>
@@ -25,16 +29,19 @@
 
         </item>
 
-    <item android:title="Exit" >
-        <menu>
-            <item
-                android:id="@+id/signOut"
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
-                android:title="Sign out" />
+        <item android:title="Exit" >
+            <menu>
+                <item
+                    android:id="@+id/signOut"
+                    android:icon="@drawable/ic_exit_to_app_black_24dp"
+                    android:title="Sign out" />
 
-        </menu>
+            </menu>
 
     </item>
+    </group>
+
+
 
 
 </menu>

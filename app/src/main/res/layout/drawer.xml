@@ -5,6 +5,7 @@
     android:layout_height="150dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#BB6666"
+    android:padding="8dp"
     android:orientation="vertical"
     android:paddingLeft="5dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

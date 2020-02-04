@@ -13,5 +13,9 @@
     <item name="windowNoTitle">true</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    
+    <style name="MyRequestDialog" parent = "Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+    </style>
 
 </resources>
