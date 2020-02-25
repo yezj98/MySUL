@@ -107,6 +107,10 @@ public class ContactActivity extends AppCompatActivity {
                 }
             });
         }
+        else if (previous.equals("P")) {
+
+
+        }
 
 
     }

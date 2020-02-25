@@ -144,7 +144,8 @@ public class profilePicture extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Intent intent = new Intent(profilePicture.this, HealthForm.class);
+                                    Intent intent = new Intent(profilePicture.this, ContactActivity.class);
+                                    intent.putExtra("FROM","P");
                                     startActivity(intent);
                                     finish();
 
