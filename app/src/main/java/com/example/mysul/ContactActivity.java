@@ -47,11 +47,10 @@ public class ContactActivity extends AppCompatActivity {
 
                 if (number1.isEmpty() || number2.isEmpty() || number3.isEmpty()) {
                     Toast.makeText(ContactActivity.this, "Please enter the contact number", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     userID = FirebaseAuth.getInstance().getUid();
-                    Toast.makeText(ContactActivity.this, "" + firebaseUser.getDisplayName() + "\n" +firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ContactActivity.this, "" + firebaseUser.getDisplayName() + "\n" + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                     post obj = new post(number1, number2, number3);
                     upload(obj);
 
@@ -60,7 +59,7 @@ public class ContactActivity extends AppCompatActivity {
         });
     }
 
-    private void upload (post obj) {
+    private void upload(post obj) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         userID = FirebaseAuth.getInstance().getUid();
 
@@ -77,7 +76,68 @@ public class ContactActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
 
+        Intent intent = getIntent();
+        final String previous = intent.getStringExtra("FROM");
 
+
+        if (previous.equals("Menu")) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            String mUserID = firebaseUser.getUid();
+
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(mUserID);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("Contact")) {
+                        showContact();
+
+                    } else {
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+    }
+
+    private void showContact() {
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String mUserID = firebaseUser.getUid();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(mUserID).child("Contact");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String number1 = dataSnapshot.child("phoneNumber").getValue().toString();
+                String number2 = dataSnapshot.child("secondphoneNumber").getValue().toString();
+                String number3 = dataSnapshot.child("thridphoneNumber").getValue().toString();
+
+
+                firstNumber.setText(number1);
+                secondNumber.setText(number2);
+                thridNumber.setText(number3);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
+    
