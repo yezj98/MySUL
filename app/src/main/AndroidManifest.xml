@@ -18,6 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MapsFragmentActivity" />
+        <activity android:name=".profilePicture"></activity>
+
 
         <service android:name=".Service.FCMService">
             <intent-filter>

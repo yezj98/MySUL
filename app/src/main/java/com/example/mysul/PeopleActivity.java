@@ -67,6 +67,7 @@ public class PeopleActivity extends AppCompatActivity implements FirebaseLoadDon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_people);
+        getSupportActionBar().hide();
 
         //initial the API
         ifcMservice = Common.getFCMservice();

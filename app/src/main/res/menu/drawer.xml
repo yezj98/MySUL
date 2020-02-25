@@ -21,9 +21,9 @@
         <item android:title="Form">
             <menu>
                 <item
-                android:id="@+id/health"
-                android:icon="@drawable/ic_local_hospital_black_24dp"
-                android:title="Medical form"/>
+                    android:id="@+id/health"
+                    android:icon="@drawable/ic_local_hospital_black_24dp"
+                    android:title="Medical form" />
 
             </menu>
 

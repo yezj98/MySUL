@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +26,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -42,6 +46,7 @@ public class MenuActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
     TextView title_TV;
     ImageButton voice_BTN;
+    ImageView profile;
 
     String[] SMSPERMISSION = {Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE};
     public static final int PERMISSION_CODE = 123;
@@ -57,10 +62,10 @@ public class MenuActivity extends AppCompatActivity {
 
         title_TV = findViewById(R.id.title_TV);
         voice_BTN = findViewById(R.id.voiceButton);
-
-
-
         drawerLayout = findViewById(R.id.drawer_layout);
+
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         sendSMS();
 
@@ -73,8 +78,21 @@ public class MenuActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        View headerView = navigationView.getHeaderView(0);
+        profile = headerView.findViewById(R.id.imageView3);
+
+        Glide.with(this).load(firebaseUser.getPhotoUrl()).into(profile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(MenuActivity.this, profilePicture.class);
+                intent.putExtra("FROM", "Menu");
+                startActivity(intent);
+            }
+        });
+
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MapsFragmentActivity()).commit();
@@ -109,6 +127,17 @@ public class MenuActivity extends AppCompatActivity {
 
                 if (id == R.id.drawer_friend) {
                     Intent intent = new Intent(MenuActivity.this, PeopleActivity.class);
+                    startActivity(intent);
+                }
+
+                if (id == R.id.drawer_contact) {
+                    Intent intent = new Intent(MenuActivity.this, ContactActivity.class);
+                    intent.putExtra("FROM", "Menu");
+                    startActivity(intent);
+                }
+
+                if (id == R.id.health) {
+                    Intent intent = new Intent(MenuActivity.this, HealthForm.class);
                     startActivity(intent);
                 }
 

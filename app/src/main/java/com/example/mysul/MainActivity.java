@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
 
         Paper.init(this);
         user_information = FirebaseDatabase.getInstance().getReference(Common.USER_INFORMATION);
@@ -113,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupUI() {
-        startActivity(new Intent(MainActivity.this, MenuActivity.class));
+        Intent intent = new Intent(MainActivity.this, profilePicture.class);
+        intent.putExtra("FROM","Sign");
+        startActivity(intent);
         finish();
     }
 
@@ -145,13 +148,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (firebaseUser != null) {
-            // If user is already logged in upon opening, go to home intent
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-        }
+
 
     }
 }

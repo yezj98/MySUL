@@ -1,6 +1,7 @@
 package com.example.mysul;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
@@ -15,12 +16,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import java.util.ArrayList;
 
 public class MapsFragmentActivity extends Fragment {
 
-
+    private GoogleMap mMap;
     private static final int REQUEST_CODE_SPEECH = 123;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private double currentLatitude, currentLongtitude;
 
     TextView title_TV;
 
@@ -73,6 +84,10 @@ public class MapsFragmentActivity extends Fragment {
             }
         }
     }
+
+
+
+
 }
 
 
