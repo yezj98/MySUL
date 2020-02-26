@@ -1,10 +1,14 @@
 package com.example.mysul;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
 import android.telephony.SmsManager;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -56,12 +61,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int zoom = 20;
     private int PERMISSION_CODE = 123;
     private static final int REQUEST_CODE_SPEECH = 123;
+    private final static int CALLING_CODE = 111;
     private final static int PERMISSIONS_REQUEST_SMS = 0;
     String[] SMSPERMISSION = {Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE};
     EditText title_ED;
     String number;
+    int i, counter = 0;
     Button mSendLocation;
     private String message;
+    MediaPlayer mediaPlayer;
 
 
 
@@ -75,9 +83,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         title_ED = findViewById(R.id.editText12);
         mSendLocation = findViewById(R.id.sendLocation);
+        mSendLocation.setVisibility(View.VISIBLE);
+        title_ED.setVisibility(View.VISIBLE);
         permission();
+        callingPermission();
+
+        content();
 
         ImageButton imageButton = findViewById(R.id.voiceButton);
+        imageButton.setVisibility(View.VISIBLE);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,68 +104,109 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mSendLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String mcarNumber =  title_ED.getText().toString();
-                Log.d("gg","" +mcarNumber);
+
+                i ++;
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        i = 0;
+
+                    }
+                };
+
+                if (i == 1) {
+                    final String mcarNumber = title_ED.getText().toString();
+                    Log.d("gg", "" + mcarNumber);
 
 
-                if (!mcarNumber.isEmpty()) {
-                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String userID = currentFirebaseUser.getUid();
+                    if (!mcarNumber.isEmpty()) {
+                        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        String userID = currentFirebaseUser.getUid();
 
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(userID).child("Contact");
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(userID).child("Contact");
 
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            String number = dataSnapshot.child("phoneNumber").getValue().toString();
-                            String secondNumber = dataSnapshot.child("secondphoneNumber").getValue().toString();
-                            String thridnumber = dataSnapshot.child("thridphoneNumber").getValue().toString();
-                            Log.v("Number", number);
-                            createObject();
-                            sendCar(number, secondNumber, thridnumber, mcarNumber);
-                        }
+                                String number = dataSnapshot.child("phoneNumber").getValue().toString();
+                                String secondNumber = dataSnapshot.child("secondphoneNumber").getValue().toString();
+                                String thridnumber = dataSnapshot.child("thridphoneNumber").getValue().toString();
+                                Log.v("Number", number);
+                                createObject();
+                                sendCar(number, secondNumber, thridnumber, mcarNumber);
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        String userID = currentFirebaseUser.getUid();
+
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(userID).child("Contact");
+
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                String number = dataSnapshot.child("phoneNumber").getValue().toString();
+                                String secondNumber = dataSnapshot.child("secondphoneNumber").getValue().toString();
+                                String thridnumber = dataSnapshot.child("thridphoneNumber").getValue().toString();
+                                Log.v("Number", number);
+                                createObject();
+                                sendSMS(number, secondNumber, thridnumber);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 }
-
-                else {
-                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String userID = currentFirebaseUser.getUid();
-
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(userID).child("Contact");
-
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                else if (i == 2) {
+                    alarm();
+                    i = 0;
+                    Toast.makeText(MapsActivity.this, "Alarm", Toast.LENGTH_LONG).show();
+                    AlertDialog dialog = new AlertDialog.Builder(MapsActivity.this).setTitle("Stop the alarm").setPositiveButton("Stop", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            String number = dataSnapshot.child("phoneNumber").getValue().toString();
-                            String secondNumber = dataSnapshot.child("secondphoneNumber").getValue().toString();
-                            String thridnumber = dataSnapshot.child("thridphoneNumber").getValue().toString();
-                            Log.v("Number", number);
-                            createObject();
-                            sendSMS(number, secondNumber, thridnumber);
+                        public void onClick(DialogInterface dialog, int which) {
+                            stopMedia();
                         }
-
+                    }).setNegativeButton("Emergency calling", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(MapsActivity.this, "Calling", Toast.LENGTH_SHORT).show();
+                            stopMedia();
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse("tel:911"));
+                            startActivity(intent);
 
                         }
-                    });
-
-
-
-
-
+                    }).show();
                 }
 
             }
         });
 
+
+    }
+
+    private void alarm() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.song);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+    }
+
+    public void stopMedia() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
 
     }
 
@@ -264,7 +319,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         databaseReference.setValue(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) { //put the parameter of the obj class
-                Toast.makeText(MapsActivity.this, "Location updated", Toast.LENGTH_LONG).show(); //show the toast when the update is success
+                //show the toast when the update is success
             }
         });
     }
@@ -289,6 +344,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void callingPermission() {
+        final String[] permission = {Manifest.permission.CALL_PHONE}; //Array for store the 2 permissions
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(MapsActivity.this, permission, CALLING_CODE);
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.CALL_PHONE)) {
+                AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Please accept the permission").setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MapsActivity.this, permission, CALLING_CODE);
+                    }
+                }).setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MapsActivity.this, "User deny", Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+            }
+
+        }
+    }
+
+    private void content () {
+        counter ++;
+        createObject();
+
+        refresh (10000);
+
+    }
+
+    private void refresh(int i) {
+
+        final Handler handler = new Handler();
+        final  Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                content();
+            }
+        };
+        handler.postDelayed(runnable, i);
+    }
 
 
 }

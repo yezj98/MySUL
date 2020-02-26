@@ -20,6 +20,7 @@
         android:layout_below="@+id/editText12"
         android:layout_marginTop="80dp"
         android:layout_width="100dp"
+        android:visibility="invisible"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:background="@drawable/ic_mic_black_24dp"
@@ -31,6 +32,7 @@
         android:background="@drawable/backgroundtext"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:visibility="invisible"
 
         android:ems="10"
         android:inputType="textPersonName"
@@ -46,6 +48,7 @@
         android:layout_below="@+id/voiceButton"
         android:layout_centerHorizontal="true"
         android:text="Send Location"
+        android:visibility="invisible"
         android:layout_marginTop="120dp"
         android:textStyle="bold"
         />
