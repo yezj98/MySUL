@@ -138,6 +138,9 @@ public class HealthForm extends AppCompatActivity {
                 } else {
                     uploadHealth obj = new uploadHealth(name, date, weight, height, medicine, illness, skin, blood);
                     upload(obj);
+                    Intent intent = new Intent(HealthForm.this, ContactActivity.class);
+                    intent.putExtra("FROM", "Health");
+                    startActivity(intent);
 
                 }
 
@@ -154,9 +157,7 @@ public class HealthForm extends AppCompatActivity {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(HealthForm.this, "Success", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(HealthForm.this, ContactActivity.class);
-                intent.putExtra("FROM", "Health");
-                startActivity(intent);
+
 
             }
         });

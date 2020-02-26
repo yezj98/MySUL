@@ -1,18 +1,28 @@
 package com.example.mysul;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +42,13 @@ public class CurrentLocationActivity extends FragmentActivity implements OnMapRe
     Double latitudeX, longtitudeX;
     LatLng sydney;
 
+    private String FINELOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private String COARSELOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private double currentLatitude, currentLongtitude;
+    private boolean locationGranted = false;
+    private int PERMISSION_CODE = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +57,8 @@ public class CurrentLocationActivity extends FragmentActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        permission();
 
 
     }
@@ -58,6 +77,7 @@ public class CurrentLocationActivity extends FragmentActivity implements OnMapRe
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         content();
+        mMap.setMyLocationEnabled(true);
 
 
         // Add a marker in Sydney and move the camera
@@ -83,8 +103,9 @@ public class CurrentLocationActivity extends FragmentActivity implements OnMapRe
                 Log.d ("lll" , "" + latitudeX);
 
                 sydney = new LatLng(latitudeX, longtitudeX);
-                mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                mMap.addMarker(new MarkerOptions().position(sydney).title("HERE!"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18), 1, null);
 
             }
 
@@ -113,6 +134,40 @@ public class CurrentLocationActivity extends FragmentActivity implements OnMapRe
             }
         };
         handler.postDelayed(runnable, i);
+    }
+
+    private void currentLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (locationGranted) {
+            final Task location = fusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    Location currentLocation = (Location) task.getResult();
+                    currentLatitude = currentLocation.getLatitude();
+                    currentLongtitude = currentLocation.getLongitude();
+                    LatLng currentLatLng = new LatLng(currentLatitude, currentLongtitude);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18), 1, null);
+                }
+            });
+        }
+        else {
+            Toast.makeText(CurrentLocationActivity.this, "Location Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void permission() {
+        String[] isPermissionGranted = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINELOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSELOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationGranted = true;
+                currentLocation();
+            } else {
+                ActivityCompat.requestPermissions(CurrentLocationActivity.this, isPermissionGranted, PERMISSION_CODE);
+            }
+        } else {
+            ActivityCompat.requestPermissions(CurrentLocationActivity.this, isPermissionGranted, PERMISSION_CODE);
+        }
     }
 
 

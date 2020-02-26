@@ -1,13 +1,20 @@
 package com.example.mysul;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.telecom.RemoteConference;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +29,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -44,9 +52,10 @@ public class MenuActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH = 123;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
-    TextView title_TV;
+    TextView title_TV, name_TV;
     ImageButton voice_BTN;
     ImageView profile;
+    String name;
 
     String[] SMSPERMISSION = {Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE};
     public static final int PERMISSION_CODE = 123;
@@ -66,8 +75,11 @@ public class MenuActivity extends AppCompatActivity {
 
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        name = firebaseUser.getDisplayName();
+
 
         sendSMS();
+        notification();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,16 +94,20 @@ public class MenuActivity extends AppCompatActivity {
 
         View headerView = navigationView.getHeaderView(0);
         profile = headerView.findViewById(R.id.imageView3);
+        name_TV = headerView.findViewById(R.id.textView3);
+        name_TV.setText(name);
 
         Glide.with(this).load(firebaseUser.getPhotoUrl()).into(profile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(MenuActivity.this, profilePicture.class);
+                Intent intent = new Intent(MenuActivity.this, profilePicture.class);
                 intent.putExtra("FROM", "Menu");
                 startActivity(intent);
             }
         });
+        Log.d("name11", ""+name);
+
 
 
         if (savedInstanceState == null) {
@@ -141,7 +157,7 @@ public class MenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
-                if (id == R.id.drawer_currentLocation){
+                if (id == R.id.drawer_currentLocation) {
                     Intent intent = new Intent(MenuActivity.this, CurrentLocationActivity.class);
                     startActivity(intent);
                 }
@@ -150,6 +166,49 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void notification() {
+        String channelID = "MYSUL";
+        String CHANNEL_ID = "my_channel_01";
+        CharSequence name = "my_channel";
+        String Description = "This is my channel";
+
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setShowBadge(false);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
+
+        //build the notification tittle and conten
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("MySUL health form")
+                .setContentText("this is the form");
+        // creates the intent needed to show the notification
+        Intent intent = new Intent(MenuActivity.this, HealthForm.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        stackBuilder.addParentStack(HealthForm.class);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        //add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+
+    }
+
 
 //    private void speak() {
 //        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

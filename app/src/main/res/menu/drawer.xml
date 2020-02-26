@@ -18,8 +18,8 @@
             android:title="Edit contact" />
         <item
             android:id="@+id/drawer_currentLocation"
-            android:icon="@drawable/ic_contacts"
-            android:title="Edit contact" />
+            android:icon="@drawable/ic_my_location"
+            android:title="Tracker" />
 
 
 

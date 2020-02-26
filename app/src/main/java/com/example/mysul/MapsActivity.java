@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         title_ED.setVisibility(View.VISIBLE);
         permission();
         callingPermission();
-        notification();
+//        notification();
 
         content();
 
@@ -396,47 +396,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         handler.postDelayed(runnable, i);
     }
 
-    private void notification () {
-        String channelID = "MYSUL";
-        String CHANNEL_ID = "my_channel_01";
-        CharSequence name = "my_channel";
-        String Description = "This is my channel";
-
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-            mChannel.setDescription(Description);
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.RED);
-            mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-            mChannel.setShowBadge(false);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-
-        //build the notification tittle and conten
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("MySUL health form")
-                .setContentText("this is the form");
-        // creates the intent needed to show the notification
-        Intent intent = new Intent(MapsActivity.this, ContactActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(intent);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
-
-        //add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
-
-    }
+//    private void notification () {
+//        String channelID = "MYSUL";
+//        String CHANNEL_ID = "my_channel_01";
+//        CharSequence name = "my_channel";
+//        String Description = "This is my channel";
+//
+//        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//
+//            int importance = NotificationManager.IMPORTANCE_HIGH;
+//            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+//            mChannel.setDescription(Description);
+//            mChannel.enableLights(true);
+//            mChannel.setLightColor(Color.RED);
+//            mChannel.enableVibration(true);
+//            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+//            mChannel.setShowBadge(false);
+//            notificationManager.createNotificationChannel(mChannel);
+//        }
+//
+//
+//        //build the notification tittle and conten
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+//                .setSmallIcon(R.mipmap.ic_launcher_round)
+//                .setContentTitle("MySUL health form")
+//                .setContentText("this is the form");
+//        // creates the intent needed to show the notification
+//        Intent intent = new Intent(MapsActivity.this, ContactActivity.class);
+//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+//        stackBuilder.addParentStack(MainActivity.class);
+//        stackBuilder.addNextIntent(intent);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        builder.setContentIntent(pendingIntent);
+//
+//        //add as notification
+//        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        manager.notify(0, builder.build());
+//
+//    }
 
 
 }
