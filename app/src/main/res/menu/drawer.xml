@@ -16,6 +16,10 @@
             android:id="@+id/drawer_contact"
             android:icon="@drawable/ic_contacts"
             android:title="Edit contact" />
+        <item
+            android:id="@+id/drawer_currentLocation"
+            android:icon="@drawable/ic_contacts"
+            android:title="Edit contact" />
 
 
 

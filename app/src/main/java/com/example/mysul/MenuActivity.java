@@ -141,6 +141,11 @@ public class MenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
+                if (id == R.id.drawer_currentLocation){
+                    Intent intent = new Intent(MenuActivity.this, CurrentLocationActivity.class);
+                    startActivity(intent);
+                }
+
                 return false;
             }
         });
